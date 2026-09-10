@@ -19,3 +19,64 @@ requiere(m3, grimorio). requiere(m3, pocion).
 arma('SuperEspada', 10, fuego).
 % --- TIENEN ---
 tiene('Fer', arma('SuperEspada', 10, fuego)).
+
+
+
+
+%Cuanta XP falta para subir de nivel
+xp_para_subir(NivelActual, XP) :- 
+    XP is NivelActual * 30.
+
+%Cuanta vida queda
+
+vida_restante(VidaMax, Danio, Final) :-
+    Final is VidaMax - Danio.
+
+%Operacion recursiva
+
+factorial(0,1).
+factorial(N,R) :-
+    N1 is N - 1,
+    factorial(N1, R1),
+    R is N * R1.
+
+%XP acumulada tras N misiones
+%caso base: 0 misiones = 0 xp
+xp_acumulada(0, 0).
+%caso recursivo: XP (N) = XP(N-1) + (30 * N)
+xp_acumulada(N, Total) :-
+    N > 0, 
+    N1 is N - 1,
+    xp_acumulada(N1, Prev),
+    Total is Prev + (30 * N).
+
+%danio acumulado tras N golpes
+%caso base: 0 golpes, 0 daño
+dano_acumulado(0, 0).
+%caso recursivo: Dano (N) = (10*K)
+dano_acumulado(N, Total) :-
+    N > 0,
+    N1 is N - 1,
+    dano_acumulado(N1, K),
+    Total is K + (10 * N). 
+
+%Dos personajes distintos con el mismo nivel exacto?
+mismo_nivel(P1, P2) :-
+    personaje(P1, N, _),
+    personaje(P2, N, _),
+    P1 \== P2.
+
+%Un personaje con vida exactamente balanceada (100)?
+es_balanceado(P) :-
+    personaje(P, _, Vida),
+    Vida =:= 100.
+
+
+mas_fuerte(P1, P2) :-
+    personaje(P1, N1, _),
+    personaje(P2, N2, _),
+    N1 > N2.
+
+mismo_objeto(P1, P2, Obj) :-
+    inventario(P1, L1), inventario(P2, L2),
+    member(Obj, L1), inventario(P2, L2).
