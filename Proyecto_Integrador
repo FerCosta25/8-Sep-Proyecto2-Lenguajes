@@ -1,3 +1,4 @@
+%Primera clase
 % --- PERSONAJES (nombre, nivel, vida) ---
 personaje('Elara', 5, 100).
 personaje('Kael', 3, 80).
@@ -21,6 +22,7 @@ arma('SuperEspada', 10, fuego).
 tiene('Fer', arma('SuperEspada', 10, fuego)).
 
 
+%Segunda clase
 
 
 %Cuanta XP falta para subir de nivel
@@ -34,7 +36,10 @@ vida_restante(VidaMax, Danio, Final) :-
 
 %Operacion recursiva
 
+
+%condicion base
 factorial(0,1).
+
 factorial(N,R) :-
     N1 is N - 1,
     factorial(N1, R1),
@@ -79,4 +84,46 @@ mas_fuerte(P1, P2) :-
 
 mismo_objeto(P1, P2, Obj) :-
     inventario(P1, L1), inventario(P2, L2),
-    member(Obj, L1), inventario(P2, L2).
+    member(Obj, L1), member(Obj, L2).
+
+
+%Tercera clase
+
+ser(presente, tercera, singular, "es").
+ser(pasado, tercera, singular, "fue").
+
+conjugar_accion(Verbo, Tiempo, Persona, Numero, C) :-
+    (Verbo = "ser" ->
+        ser(Tiempo, Persona, Numero, C)
+    ; C = Verbo).
+
+%Verificador de nivel (operador relacional >=)
+
+puede_aceptar(Personaje, ID_Mision) :-
+    personaje(Personaje, Nivel, _),
+    mision(ID_Mision, _, Dificultad, _),
+    Nivel >= Dificultad.
+
+%tiene el objeto que la mision requiere? (member)
+
+tiene_requerido(Personaje, Objeto) :-
+    inventario(Personaje, Lista),
+    member(Objeto, Lista).
+
+%Fusionar inventarios de dos personajes con append
+
+fusionar_equipo(P1, P2, EquipoFusionado) :-
+    inventario(P1, L1), inventario(P2, L2),
+    append(L1, L2, EquipoFusionado).
+
+%Reporte narrativo combinando todo lo anterior 
+
+generar_reporte(Personaje, MisionID, Mensaje) :-
+    puede_aceptar(Personaje, MisionID),
+    mision(MisionID, Nombre, _, XP),
+    conjugar_accion("ser", presente, tercera, singular, F),
+    atomic_list_concat(
+        [Personaje, F, "capaz de completar", Nombre, "por", XP, "XP"],
+    ' ', Mensaje).
+
+    
